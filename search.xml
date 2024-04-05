@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2022/04/05/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<span id="more"></span>
+
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Github + Hexo搭建博客</title>
+    <url>/2022/04/05/hexo-blog/</url>
+    <content><![CDATA[<p>目前CSDN、掘金、博客园、简书等虽然使用方便，而且能被搜索引擎检索到。但是总归是别人的平台，经常会受限，因此个人网站是一个不错的选择。GitHub Pages + Hexo 可以搭建自己的博客，该方式完全免费且非常稳定。</p>
+<span id="more"></span>
+
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><strong>GitHub Pages 是什么？</strong></p>
+<p><a href="https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages">What is GitHub Pages? - GitHub Help</a></p>
+<p>GitHub Pages 是由 GitHub 官方提供的一种免费的静态站点托管服务，让我们可以在 GitHub 仓库里托管和发布自己的静态网站页面。</p>
+<p><strong>Hexo 是什么？</strong></p>
+<p>官网：<a href="https://hexo.io/zh-cn/">hexo.io</a></p>
+<p>Hexo 是一个快速、简洁且高效的静态博客框架，它基于 Node.js 运行，可以将我们撰写的 Markdown 文档解析渲染成静态的 HTML 网页。</p>
+<p><strong>Hexo + GitHub 文章发布原理</strong></p>
+<p>在本地撰写 Markdown 格式文章后，通过 Hexo 解析文档，渲染生成具有主题样式的 HTML 静态网页，再推送到 GitHub 上完成博文的发布。</p>
+<h1 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h1><p>Hexo 基于 Node.js，搭建过程中还需要使用 npm（Node.js 已带） 和 git，因此先搭建本地操作环境，安装 Node.js 和 Git。</p>
+<ul>
+<li><a href="https://nodejs.org/zh-cn">Node.js</a></li>
+<li><a href="https://git-scm.com/downloads">Git</a></li>
+</ul>
+<p><strong>安装 Node.js</strong></p>
+<p>使用CentOS 8 yum源安装的Node.js版本较低，使用hexo d等命令时会报错。所以采用源码编译安装<br>1、官网下载最新版源码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /usr/local/src</span><br><span class="line">wget https://nodejs.org/dist/v16.14.2/node-v16.14.2.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>2、安装编译所需要的工具</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dnf install gcc gcc-c++</span><br></pre></td></tr></table></figure>
+
+<p>3、解压缩并编译</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tar zxvf node-v16.14.2.tar.gz</span><br><span class="line">cd node-v6.10.0</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+
+<p><strong>安装 Git</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">dnf install -y git</span><br></pre></td></tr></table></figure>
+
+<p><strong>检查版本</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">node -v</span><br><span class="line">git --version</span><br></pre></td></tr></table></figure>
+
+<h1 id="连接博客"><a href="#连接博客" class="headerlink" title="连接博客"></a>连接博客</h1><p>使用邮箱注册 GitHub 账户，选择免费账户（Free），并完成邮件验证。</p>
+<p><strong>设置用户名和邮箱</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;GitHub 用户名&quot;</span><br><span class="line">git config --global user.email &quot;GitHub 邮箱&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建 SSH 密匙</strong></p>
+<blockquote>
+<p>输入 ssh-keygen -t rsa -C “GitHub 邮箱”，然后一路回车。</p>
+</blockquote>
+<p><strong>添加密匙</strong>：</p>
+<blockquote>
+<p>进入 <code>/root/.ssh/</code> 目录，打开公钥 id_rsa.pub 文件并复制里面的内容。</p>
+</blockquote>
+<p>登陆 GitHub ，进入 Settings 页面，选择左边栏的 SSH and GPG keys，点击 New SSH key。 Title 随便取个名字，粘贴复制的 id_rsa.pub 内容到 Key 中，点击 Add SSH key 完成添加。</p>
+<p><strong>验证连接</strong>：</p>
+<blockquote>
+<p>打开 Git Bash，输入 ssh -T <a href="mailto:git@github.com">git@github.com</a> 出现 “Are you sure……”，输入 yes 回车确认</p>
+</blockquote>
+<p>显示 <code>Hi xxx! You&#39;ve successfully……</code> 即连接成功。</p>
+<h1 id="创建-Github-pages-仓库"><a href="#创建-Github-pages-仓库" class="headerlink" title="创建 Github pages 仓库"></a>创建 Github pages 仓库</h1><p>GitHub 主页右上角加号 -&gt; New repository：</p>
+<ul>
+<li>Repository name 中输入：用户名.github.io</li>
+<li>勾选 Add a README file，会自动设置分支（分支名设置成master）：This will set master as the default branch.</li>
+<li>create repository</li>
+</ul>
+<h1 id="创建保存源码的分支"><a href="#创建保存源码的分支" class="headerlink" title="创建保存源码的分支"></a>创建保存源码的分支</h1><p>GitHub Pages 会自动部署静态网页文件，并将 master 分支作为部署的默认分支。为将静态网页和源文件（包含文章、主题等）分离开，强烈建议创建新分支，这样 master 分支只用来发布静态网页，而文档编辑和 Hexo 操作都在另一个分支上完成。</p>
+<p>打开博客所在本地的目录，将 git 仓库 clone 至本地：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/用户名/用户名.github.io.git</span><br><span class="line">cd 命令进入仓库目录,再创建本地分支</span><br><span class="line"># 新建并切换到博客源码分支</span><br><span class="line">git checkout -b hexo</span><br><span class="line"># 查看本地分支</span><br><span class="line">git branch -l</span><br></pre></td></tr></table></figure>
+
+<h1 id="本地安装-Hexo-博客程序"><a href="#本地安装-Hexo-博客程序" class="headerlink" title="本地安装 Hexo 博客程序"></a>本地安装 Hexo 博客程序</h1><p>由于只能在空文件夹中生成 Hexo 项目,所以我们先将 <code>.git</code> 以及其他文件(如 <code>README.MD</code>)移出去,完成初始化后再移回来.</p>
+<p><strong>安装 Hexo</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+
+<p><strong>Hexo 初始化</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 初始化</span><br><span class="line">hexo init</span><br><span class="line"># 安装组件</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+
+<p><strong>本地预览</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 生成页面</span><br><span class="line">hexo g</span><br><span class="line"># 启动预览</span><br><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+
+<p>访问 <a href="http://localhost:4000，">http://localhost:4000，</a> 出现 Hexo 默认页面，本地博客安装成功！</p>
+<h1 id="部署-Hexo-到-Github-Pages"><a href="#部署-Hexo-到-Github-Pages" class="headerlink" title="部署 Hexo 到 Github Pages"></a>部署 Hexo 到 Github Pages</h1><p>本地博客测试成功后，就是上传到 GitHub 进行部署，使其能够在网络上访问。</p>
+<p>首先安装 hexo-deployer-git：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+
+<p>然后修改 _config.yml 文件末尾的 deploy 部分，修改成如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:用户名/用户名.github.io.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+
+<p>执行 <code>hexo g -d</code>部署静态页面至 Github Pages.</p>
+<p>如果成功,此时通过 https:&#x2F;&#x2F;用户名.github.io&#x2F; 会出现 Hexo 默认页面.</p>
+<h1 id="部署-源文件到-Github-Pages"><a href="#部署-源文件到-Github-Pages" class="headerlink" title="部署 源文件到 Github Pages"></a>部署 源文件到 Github Pages</h1><p>发现 github pages 仓库中没有 hexo 分支,因为没有将本地 <code>git pull</code>到 github 上</p>
+<p>先查看本地分支和远程仓库分支,发现本地和远程不一致,本地存在我创建的 hexo 分支</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git branch -a</span><br></pre></td></tr></table></figure>
+
+<p>将本地创建的分支 push 到 github 仓库,两个 hexo,一个是本地名,一个是远程仓库里的命名.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push origin hexo:hexo</span><br></pre></td></tr></table></figure>
+
+<p>由于有部分是 Hexo 初始化的文件,不需要上传,可以过滤掉.打开 <code>.gitignore</code>文件,选择 过滤的文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">.DS_Store</span><br><span class="line">Thumbs.db</span><br><span class="line">db.json</span><br><span class="line">*.log</span><br><span class="line">node_modules/</span><br><span class="line">public/</span><br><span class="line">.deploy*/</span><br></pre></td></tr></table></figure>
+
+<p>将本地的源文件 push 到 github 仓库.</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line"># 引号内是描述</span><br><span class="line">git commit -m &#x27;hexo source post&#x27;</span><br><span class="line"># hexo 是分支名</span><br><span class="line">git push origin hexo-source</span><br></pre></td></tr></table></figure>
+
+<p>注意：如果是通过 git clone 下载配置的主题， push 源文件时需要将主题的 <code>.git</code>文件夹删除或改名备份。</p>
+<h1 id="更换主题"><a href="#更换主题" class="headerlink" title="更换主题"></a>更换主题</h1><p>在 Themes | Hexo 选择一个喜欢的主题，比如 NexT，进入网站目录打开 Git Bash Here 下载主题：</p>
+<blockquote>
+<p>主题链接: <a href="https://hexo.io/themes/">https://hexo.io/themes/</a></p>
+<p>我所用的 NexT主题说明文档: <a href="http://theme-next.iissnan.com/getting-started.html">http://theme-next.iissnan.com/getting-started.html</a></p>
+</blockquote>
+<h1 id="发布文章"><a href="#发布文章" class="headerlink" title="发布文章"></a>发布文章</h1><p>进入博客所在目录，创建博文：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;My New Post&quot;</span><br></pre></td></tr></table></figure>
+
+<p>然后 source 文件夹中会出现一个 My New Post.md 文件，就可以使用 Markdown 编辑器在该文件中撰写文章了。</p>
+<p>写完后运行下面代码将文章渲染并部署到 GitHub Pages 上完成发布。以后每次发布文章都是这两条命令。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 生成页面</span><br><span class="line">hexo g</span><br><span class="line"># 部署发布</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+
+<p>也可以不使用命令自己创建 .md 文件，只需在文件开头手动加入如下格式 Front-matter 即可，写完后运行 hexo g 和 hexo d 发布。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World # 标题</span><br><span class="line">date: 2019/3/26 hh:mm:ss # 时间</span><br><span class="line">categories: # 分类</span><br><span class="line">- test</span><br><span class="line">tags: # 标签</span><br><span class="line">- test</span><br><span class="line">---</span><br><span class="line">摘要</span><br><span class="line">&lt;!--more--&gt;</span><br><span class="line">正文</span><br></pre></td></tr></table></figure>
+
+<h1 id="next主题优化"><a href="#next主题优化" class="headerlink" title="next主题优化"></a>next主题优化</h1><p><strong>设置圆角</strong><br>在<code>source/_data/variables.styl</code>中输入以下代码，注意，<code>$</code>并不是多余的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 圆角设置</span><br><span class="line">$border-radius-inner     = 20px 20px 20px 20px;</span><br><span class="line">$border-radius           = 20px;</span><br></pre></td></tr></table></figure>
+<p>然后在 NexT 的配置文件<code>_config.next.yml</code>中取消<code>variables.styl</code>的注释:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">custom_file_path:</span><br><span class="line">  variable: source/_data/variables.styl</span><br></pre></td></tr></table></figure>
+<p><strong>去除底部“由 Hexo 强力驱动”</strong><br>在<code>themes/next/_config.yml</code>，找到<code>Powered by Hexo &amp; NexT</code>字段，将powered: true改为powered: false<br><strong>设置个人头像</strong><br>在<code>themes/next/_config.yml</code>中找到如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Sidebar Avatar</span><br><span class="line">avatar:</span><br><span class="line">  # Replace the default image and set the url here.</span><br><span class="line">  url: /images/头像名.后缀</span><br><span class="line">  # If true, the avatar will be dispalyed in circle.</span><br><span class="line">  rounded: true</span><br><span class="line">  # If true, the avatar will be rotated with the cursor.</span><br><span class="line">  rotated: true</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>url</code>后接头像路径，一般将图片放在<code>themes\next\source\images</code>下，并修改<code>头像名.后缀</code>即可</li>
+<li><code>rounded</code>即以<strong>圆圈</strong>方式显示头像</li>
+<li><code>rotated</code>即为当鼠标放置在头像上时头像会<strong>旋转</strong></li>
+</ul>
+<p><strong>添加游客与访问统计</strong><br>在<code>themes/next/_config.yml</code>修改代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">busuanzi_count:</span><br><span class="line">  enable: true</span><br><span class="line">  total_visitors: true</span><br><span class="line">  total_visitors_icon: fa fa-user</span><br><span class="line">  total_views: true</span><br><span class="line">  total_views_icon: fa fa-eye</span><br><span class="line">  post_views: true</span><br><span class="line">  post_views_icon: far fa-eye</span><br></pre></td></tr></table></figure>
+
+<p><strong>设置打赏</strong><br>只需要<code>themes/next/_config.yml</code>中填入微信和支付宝收款二维码图片地址,即可开启该功能</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reward_comment: 坚持原创技术分享，您的支持将鼓励我继续创作！</span><br><span class="line">wechatpay: /path/to/wechat-reward-image</span><br><span class="line">alipay: /path/to/alipay-reward-image</span><br></pre></td></tr></table></figure>
+
+<p><strong>腾讯公益404</strong><br>腾讯公益404页面，寻找丢失儿童，让大家一起关注此项公益事业！<br>使用方法，新建 404.html 页面，放到主题的 <code>source</code> 目录下，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE HTML&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html;charset=utf-8;&quot;/&gt;</span><br><span class="line">  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge,chrome=1&quot; /&gt;</span><br><span class="line">  &lt;meta name=&quot;robots&quot; content=&quot;all&quot; /&gt;</span><br><span class="line">  &lt;meta name=&quot;robots&quot; content=&quot;index,follow&quot;/&gt;</span><br><span class="line">  &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;https://qzone.qq.com/gy/404/style/404style.css&quot;&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;script type=&quot;text/plain&quot; src=&quot;http://www.qq.com/404/search_children.js&quot;</span><br><span class="line">          charset=&quot;utf-8&quot; homePageUrl=&quot;/&quot;</span><br><span class="line">          homePageName=&quot;回到我的主页&quot;&gt;</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">  &lt;script src=&quot;https://qzone.qq.com/gy/404/data.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</span><br><span class="line">  &lt;script src=&quot;https://qzone.qq.com/gy/404/page.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>添加「标签」页面</strong><br>新建「标签」页面，并在菜单中显示「标签」链接。「标签」页面将展示站点的所有标签，若你的所有文章都未包含标签，此页面将是空的。底下代码是一篇包含标签的文章的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 新建页面</span><br><span class="line">$ cd your-hexo-site</span><br><span class="line">$ hexo new page tags</span><br></pre></td></tr></table></figure>
+<p>编辑刚新建的页面，将页面的<code>type</code>设置为<code>tags</code>，主题将自动为这个页面显示分类。页面内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 标签</span><br><span class="line">date: 2022-04-05 12:39:04</span><br><span class="line">type: &quot;tags&quot;</span><br><span class="line">comments: false</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：如果有集成评论服务，页面也会带有评论。若需要关闭的话，请添加字段<code>comments</code>并将值设置为<code>false</code></p>
+<p><strong>添加「分类」页面</strong><br>新建「分类」页面，并在菜单中显示「分类」链接。「分类」页面将展示站点的所有分类，若你的所有文章都未包含分类，此页面将是空的。 底下代码是一篇包含分类的文章的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 新建页面</span><br><span class="line">$ cd your-hexo-site</span><br><span class="line">$ hexo new page categories</span><br></pre></td></tr></table></figure>
+<p>编辑刚新建的页面，将页面的<code>type</code>设置为<code>categories</code>，主题将自动为这个页面显示分类。页面内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">title: 分类</span><br><span class="line">date: 2014-12-22 12:39:04</span><br><span class="line">type: &quot;categories&quot;</span><br><span class="line">comments: false</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
+<p><strong>本地搜索</strong><br>安装<code>hexo-generator-searchdb</code>，在站点的根目录下执行以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">npm install hexo-generator-searchdb --save</span><br></pre></td></tr></table></figure>
+<p>编辑<code>_config.yml</code>，新增以下内容到任意位置：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br></pre></td></tr></table></figure>
+<p>编辑<code>themes/next/_config.yml</code>，启用本地搜索功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Local search</span><br><span class="line">local_search:</span><br><span class="line">  enable: true</span><br></pre></td></tr></table></figure>
+
+<p><strong>代码复制</strong><br>编辑<code>themes/next/_config.yml</code>，启用代码复制功能：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># Add copy button on codeblock</span><br><span class="line">copy_button:</span><br><span class="line">  enable: false</span><br><span class="line">  # Available values: default | flat | mac</span><br><span class="line">  style:</span><br></pre></td></tr></table></figure>
+
+<h1 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo new &quot;name&quot;       # 新建文章</span><br><span class="line">hexo new page &quot;name&quot;  # 新建页面</span><br><span class="line">hexo g                # 生成页面</span><br><span class="line">hexo d                # 部署</span><br><span class="line">hexo g -d             # 生成页面并部署</span><br><span class="line">hexo s                # 本地预览</span><br><span class="line">hexo clean            # 清除缓存和已生成的静态文件</span><br><span class="line">hexo help             # 帮助</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a href="https://zhuanlan.zhihu.com/p/60578464#:~:text=%E4%BD%BF%E7%94%A8">使用 Hexo+GitHub 搭建个人免费博客教程（小白向） - 知乎 (zhihu.com)</a><br><a href="https://sspai.com/post/85116#!">Hexo+Github Page｜基础教程(二)：NexT 主题基本美化｜全网最细致全面的教程 - 少数派 (sspai.com)</a><br><a href="https://blog.liukuan.cc/Hexo/backup-restore/">Hexo 备份和恢复 | 子幽博客 (liukuan.cc)</a><br><a href="http://theme-next.iissnan.com/theme-settings.html">主题配置 - NexT 使用文档 (iissnan.com)</a><br><a href="https://zhuanlan.zhihu.com/p/618864711">Hexo+Next主题搭建个人博客+优化全过程（完整详细版） - 知乎 (zhihu.com)</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>linux网卡命名规则及问题解决</title>
+    <url>/2024/04/03/linux-network-setting/</url>
+    <content><![CDATA[<p>Linux 中网络接口的命名规则通常由 udev（内核设备管理器）管理，过去网卡的命名可能是 eth0、eth1 等，但现在 Linux 采用了一种更加可预测和稳定的命名方案，称为一致网络设备命名规范。</p>
+<span id="more"></span>
+<h1 id="linix网卡命名"><a href="#linix网卡命名" class="headerlink" title="linix网卡命名"></a>linix网卡命名</h1><p>Linux内核为网络接口分配名称采用的是一种简单和直观的方式：一个固定的前缀和一个递增的序号。比如，内核使用<code>eth0</code>名称以标识启动后第一个加载的网络设备，第二个加载的设备名称是<code>eth1</code>，第三个是<code>eth2</code>，以此类推。。。如果用户想要在系统启动后添加一个新的网卡，那么内核也会按这个规则为它分配新的设备名称。</p>
+<p>内核分配的网卡名称有一个隐患：每次系统启动时网络设备的加载顺序是不固定的（多数发生在为系统增加网卡，否则加载顺序基本固定），当系统重启时，内核可能会为因加载顺序为同一个网络设备分配一个与之前不同的名称，原本名称为eth0的网卡，可能经过一次系统重启后就变成了eth1。这样就会对部分涉及到网卡数据采集的应用程序产生影响，因此经开发者们商讨后，决定采用一致性网络设备命名规则</p>
+<p>目前linux的主流操作系统采用一致网络设备命名（CONSISTENT NETWORK DEVICE NAMING）规范。dell开发了biosdevname方案，systemd v197版本中将dell的方案作了进一步的一般化拓展。目前的Centos既支持dell的biosdevname，也支持systemd的方案。</p>
+<h2 id="net-ifnames和biosdevname"><a href="#net-ifnames和biosdevname" class="headerlink" title="net.ifnames和biosdevname"></a>net.ifnames和biosdevname</h2><p>biosdevnane和net.ifnames是可以被设置的内核参数，默认是net.ifnames&#x3D;1,biosdevname&#x3D;0</p>
+<p><strong>net.ifnames命名规范</strong></p>
+<p>设备类型</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>en</td>
+<td>ethernet</td>
+</tr>
+<tr>
+<td>sl</td>
+<td>serial line IP (slip)</td>
+</tr>
+<tr>
+<td>wl</td>
+<td>wlan</td>
+</tr>
+<tr>
+<td>ww</td>
+<td>wwan</td>
+</tr>
+</tbody></table>
+<p>设备位置</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>b&lt;number&gt;</code></td>
+<td>BCMA bus core numbe</td>
+</tr>
+<tr>
+<td><code>c&lt;bus_id&gt; </code></td>
+<td>CCW bus group name, without leading zeros [s390]</td>
+</tr>
+<tr>
+<td><code>o&lt;index&gt;[d&lt;dev_port&gt;]</code></td>
+<td>on-board device index number</td>
+</tr>
+<tr>
+<td><code>s&lt;slot&gt;[f&lt;function&gt;][d&lt;dev_port&gt;]</code></td>
+<td>hotplug slot index number</td>
+</tr>
+<tr>
+<td><code>x&lt;MAC&gt;</code></td>
+<td>MAC address</td>
+</tr>
+<tr>
+<td><code>[P&lt;domain&gt;]p&lt;bus&gt;s&lt;slot&gt;[f&lt;function&gt;][d&lt;dev_port&gt;]</code></td>
+<td>PCI geographical location</td>
+</tr>
+<tr>
+<td><code>[P&lt;domain&gt;]p&lt;bus&gt;s&lt;slot&gt;[f&lt;function&gt;][u&lt;port&gt;][..][c&lt;config&gt;][i&lt;interface&gt;]</code></td>
+<td>USB port number chain</td>
+</tr>
+</tbody></table>
+<p>示例</p>
+<p><strong>eth0</strong>  经典的、不可预测的内核原生 ethX 命名</p>
+<p><strong>eno1</strong> 板载1号网卡，包含固件&#x2F;BIOS 的名称为板载设备提供索引号</p>
+<p><strong>ens33</strong> BIOS 内置的 PCI-E 接口的网卡，包含固件&#x2F;BIOS 提供的 PCI Express 热插拔插槽索引号的名称</p>
+<p><strong>enp0s2</strong> ethernet PCI接口位置：bus&#x3D;2, slot&#x3D;0，包含硬件连接器物理&#x2F;地理位置的名称</p>
+<p><strong>enx000ec6877201</strong> mac地址为000ec6877201，包含接口 MAC 地址的名称</p>
+<p><strong>wwp0s29f7u2i2</strong>  4G modem</p>
+<p><strong>wlp1s0</strong> wlan PCI接口位置：bus&#x3D;3, slot&#x3D;0</p>
+<h2 id="biosdevname"><a href="#biosdevname" class="headerlink" title="biosdevname"></a>biosdevname</h2><p>biosdevname本身是一个用于在Linux系统中生成网络设备名称的工具。它的作用是根据系统的BIOS信息为网络接口设备生成一个唯一的、可识别的名称。</p>
+<table>
+<thead>
+<tr>
+<th>Device</th>
+<th>Old Name</th>
+<th>New Name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Embedded network interface(LOM)</td>
+<td>eth[0123…]</td>
+<td>em[1234…]</td>
+</tr>
+<tr>
+<td>PCI card network interface</td>
+<td>eth[0123…]</td>
+<td>p<slot>p<ethernet port></td>
+</tr>
+<tr>
+<td>Virtual function</td>
+<td>eth[0123…]</td>
+<td>p<slot>p<ethernet port>_<virtual interface></td>
+</tr>
+</tbody></table>
+<p><strong>示例</strong><br><strong>em1</strong> 板载网卡<br><strong>p3p4</strong> pci网卡<br><strong>p3p4_1</strong> 虚拟网卡</p>
+<h2 id="systemd-udev"><a href="#systemd-udev" class="headerlink" title="systemd-udev"></a>systemd-udev</h2><p>以centos8-stream为例，系统默认用于网卡设备重命名的服务是systemd-udevd，我们可以使用systemctl status systemd-udevd来查看目前该服务的状态。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# systemctl status systemd-udevd.service</span><br><span class="line">● systemd-udevd.service - udev Kernel Device Manager</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/systemd-udevd.service; static; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Mon 2024-04-01 00:48:50 CST; 2h 1min ago</span><br><span class="line">     Docs: man:systemd-udevd.service(8)</span><br><span class="line">           man:udev(7)</span><br><span class="line"> Main PID: 579 (systemd-udevd)</span><br><span class="line">   Status: &quot;Processing with 12 children at max&quot;</span><br><span class="line">    Tasks: 1</span><br><span class="line">   Memory: 19.8M</span><br><span class="line">   CGroup: /system.slice/systemd-udevd.service</span><br><span class="line">           └─579 /usr/lib/systemd/systemd-udevd</span><br></pre></td></tr></table></figure>
+
+<p>通过在虚拟机内查看打印信息，我们发现vmware的虚拟网卡被重命名了，</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# dmesg | grep ens160</span><br><span class="line">[    2.354276] vmxnet3 0000:03:00.0 ens160: renamed from eth0</span><br><span class="line">[   17.332767] IPv6: ADDRCONF(NETDEV_UP): ens160: link is not ready</span><br><span class="line">[   17.339550] vmxnet3 0000:03:00.0 ens160: intr type 3, mode 0, 3 vectors allocated</span><br><span class="line">[   17.339763] vmxnet3 0000:03:00.0 ens160: NIC Link is Up 10000 Mbps</span><br></pre></td></tr></table></figure>
+
+<p>注：<strong>VMXNET3</strong> 是一种 <strong>VMware</strong> 虚拟网卡（VNIC）类型。它基于 <strong>博通 BCM 5719</strong> 芯片开发，专为虚拟机在 <strong>VMware</strong> 平台上的网络通信而设计。</p>
+<h3 id="默认命名策略"><a href="#默认命名策略" class="headerlink" title="默认命名策略"></a>默认命名策略</h3><p>默认情况下，systemd-udev会使用以下策略，采用支持的命名方案为接口命名：</p>
+<ul>
+<li>scheme 1、如果从BIOS中能够取到可用的板载网卡的索引号，则使用这个索引号命名，例如: eno1，如不能则尝试scheme2</li>
+<li>scheme 2、如果从BIOS中能够取到可以用的网卡所在的PCI-E热插拔插槽的索引号，则使用这个索引号命名，例如: ens1，如不能则尝试scheme 3</li>
+<li>scheme 3、如果能拿到设备所连接的物理位置信息，则使用这个信息命名，例如:enp2s0，如不能则尝试scheme 5</li>
+<li>scheme 4、使用网卡的MAC地址来命名，这个方法一般不使用。enx78e7d1ea46da</li>
+<li>scheme 5、传统的kernel命名方法，例如: eth0，这种命名方法的结果不可预知的，即可能第二块网卡对应eth0，第一块网卡对应eth1。</li>
+</ul>
+<h3 id="rename流程"><a href="#rename流程" class="headerlink" title="rename流程"></a>rename流程</h3><p>在centos8中， systemd命名网卡的规则根据以下6个配置文件<br>&#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;60-net.rules，<br>&#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;71-biosdevname.rules<br>&#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;75-net-description.rules<br>&#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;80-net-name-slot.rules<br>&#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;80-net-setup-link.rules<br>&#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;99-systemd.rules</p>
+<ul>
+<li>第一步: &#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;60-net.rules</li>
+</ul>
+<p><code>60-net.rules</code>的作用是通过网络接口配置文件更改网络设备命名，它获取匹配网络设备MAC地址的配置文件，并将该配置文件中的设备名作为新设备名。<br>文件内容如下，当添加设备时，对于net子系统中任意非空设备驱动且type属性为1的设备，执行<code>/lib/udev/rename_device</code>程序，如果程序输出不为空，那么将设备名设置为程序输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# cat /lib/udev/rules.d/60-net.rules</span><br><span class="line">ACTION==&quot;add&quot;, SUBSYSTEM==&quot;net&quot;, DRIVERS==&quot;?*&quot;, ATTR&#123;type&#125;==&quot;1&quot;, PROGRAM=&quot;/lib/udev/rename_device&quot;, RESULT==&quot;?*&quot;, NAME=&quot;$result&quot;</span><br></pre></td></tr></table></figure>
+
+<p><code>/lib/udev/rename_device</code>是一个协助处理程序，它从<code>INTERFACE</code>环境变量中读取网络设备名称，随后通过<code>/sys/class/net/%s/address</code>获取MAC地址，如果<code>/etc/sysconfig/network-scripts/ifcfg-*</code>中有文件的<code>HWADDR</code>参数匹配到对应MAC地址，那么将输出该文件中<code>DEVICE</code>参数的值作为网卡名称</p>
+<ul>
+<li>第二步:&#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;71-biosdevname.rules</li>
+</ul>
+<p><code>71-biosdevname.rules</code>一般在需额外安装的<code>biosdevname</code>软件包中，该规则的作用是通过从bios获取的设备文件名更改网络设备命名，它只会在<code>biosdevname</code>内核参数为1时才生效。主要是取SMBIOS中的<code>type 9 (System Slot)</code> 和 <code>type 41 (OnboardDevices Extended Information)</code>。<br>文件内容如下，当添加设备时，对于<code>net</code>子系统中任意名称为空（未重命名过），<code>type</code>属性为1且<code>DEVTYPE</code>环境变量为空的设备，如果<code>biosdevname</code>内核参数为1，那么执行<code>/sbin/biosdevname --smbios 2.6 --nopirq --policy physical -i %k</code>程序（%k是设备的内核名称），将其输出作为新名称。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# cat /lib/udev/rules.d/71-biosdevname.rules</span><br><span class="line">SUBSYSTEM!=&quot;net&quot;, GOTO=&quot;netdevicename_end&quot;</span><br><span class="line">ACTION!=&quot;add&quot;,    GOTO=&quot;netdevicename_end&quot;</span><br><span class="line">NAME==&quot;?*&quot;,       GOTO=&quot;netdevicename_end&quot;</span><br><span class="line">ATTR&#123;type&#125;!=&quot;1&quot;,  GOTO=&quot;netdevicename_end&quot;</span><br><span class="line">ENV&#123;DEVTYPE&#125;==&quot;?*&quot;, GOTO=&quot;netdevicename_end&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">kernel <span class="built_in">command</span> line <span class="string">&quot;biosdevname=&#123;0|1&#125;&quot;</span> can turn off/on biosdevname</span></span><br><span class="line"></span><br><span class="line">IMPORT&#123;cmdline&#125;=&quot;biosdevname&quot;</span><br><span class="line">ENV&#123;biosdevname&#125;==&quot;?*&quot;, ENV&#123;UDEV_BIOSDEVNAME&#125;=&quot;$env&#123;biosdevname&#125;&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">ENV&#123;UDEV_BIOSDEVNAME&#125; can be used <span class="keyword">for</span> blacklist/whitelist</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">but will be overwritten by the kernel <span class="built_in">command</span> line argument</span></span><br><span class="line"></span><br><span class="line">ENV&#123;UDEV_BIOSDEVNAME&#125;==&quot;0&quot;, GOTO=&quot;netdevicename_end&quot;</span><br><span class="line">ENV&#123;UDEV_BIOSDEVNAME&#125;==&quot;1&quot;, GOTO=&quot;netdevicename_start&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">off by default</span></span><br><span class="line"></span><br><span class="line">GOTO=&quot;netdevicename_end&quot;</span><br><span class="line"></span><br><span class="line">LABEL=&quot;netdevicename_start&quot;</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">using NAME= instead of setting INTERFACE_NAME, so that persistent</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">names aren<span class="string">&#x27;t generated for these devices, they are &quot;named&quot; on each boot.</span></span></span><br><span class="line"></span><br><span class="line">SUBSYSTEMS==&quot;pci&quot;, PROGRAM=&quot;/sbin/biosdevname --smbios 2.6 --nopirq --policy physical -i %k&quot;, NAME=&quot;%c&quot;  OPTIONS+=&quot;string_escape=replace&quot;</span><br><span class="line"></span><br><span class="line">LABEL=&quot;netdevicename_end&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第三步： &#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;75-net-description.rules</li>
+</ul>
+<p><code>75-net-description.rules</code> 中的规则让 udev 通过检查网络接口设备，根据device属性填写网卡的属性命名，有些设备属性可能处于未定义状态，一个网卡通常同时具有多个维度的名称，systemd在选取的时候，按照有先后次序，使用先命中的，顺序可以简单理解为（eno1-ens1-enp1）</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# udevadm info /sys/class/net/ens160 | grep NAME</span><br><span class="line">E: ID_NET_NAME=ens160</span><br><span class="line">E: ID_NET_NAME_MAC=enx000c290e5d36</span><br><span class="line">E: ID_NET_NAME_PATH=enp3s0</span><br><span class="line">E: ID_NET_NAME_SLOT=ens160</span><br></pre></td></tr></table></figure>
+
+
+<p>当添加网络设备时，调用<code>net_id</code>内置程序获取设备信息并设置内部环境变量，对于usb类型的网络设备，调用<code>usb_id</code>以及<code>hwdb</code>内置程序获取设备信息并设置内部环境变量，对于pci类型的网络设备，根据一些内核中的设备属性以及<code>hwdb</code>内置程序设置内部环境变量，文件内容如下</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">do</span> not edit this file, it will be overwritten on update</span></span><br><span class="line"></span><br><span class="line">ACTION==&quot;remove&quot;, GOTO=&quot;net_end&quot;</span><br><span class="line">SUBSYSTEM!=&quot;net&quot;, GOTO=&quot;net_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;net_id&quot;</span><br><span class="line"></span><br><span class="line">SUBSYSTEMS==&quot;usb&quot;, IMPORT&#123;builtin&#125;=&quot;usb_id&quot;, IMPORT&#123;builtin&#125;=&quot;hwdb --subsystem=usb&quot;</span><br><span class="line">SUBSYSTEMS==&quot;usb&quot;, GOTO=&quot;net_end&quot;</span><br><span class="line"></span><br><span class="line">SUBSYSTEMS==&quot;pci&quot;, ENV&#123;ID_BUS&#125;=&quot;pci&quot;, ENV&#123;ID_VENDOR_ID&#125;=&quot;$attr&#123;vendor&#125;&quot;, ENV&#123;ID_MODEL_ID&#125;=&quot;$attr&#123;device&#125;&quot;</span><br><span class="line">SUBSYSTEMS==&quot;pci&quot;, IMPORT&#123;builtin&#125;=&quot;hwdb --subsystem=pci&quot;</span><br><span class="line"></span><br><span class="line">LABEL=&quot;net_end&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第四步： &#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;80-net-name-slot.rules</li>
+</ul>
+<p>如果在60-net.rules ，71-biosdevname.rules这两条规则中没有重命名网卡，且内核未指定net.ifnames&#x3D;0参数，则udev依次尝试使用以下属性值来命名网卡，如果这些属性值都没有，则网卡不会被重命名。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ID_NET_NAME_ONBOARD</span><br><span class="line">ID_NET_NAME_SLOT</span><br><span class="line">ID_NET_NAME_PATH</span><br></pre></td></tr></table></figure>
+
+<p>上边的71-biosdevname.rules 是实际执行biosdevname的policy<br>75-net-description.rules和80-net-name-slot.rules实际执行step1,2,3</p>
+<ul>
+<li>第五步 &#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;80-net-setup-link.rules</li>
+</ul>
+<p><code>80-net-setup-link.rules</code>的作用是通过一些udev内置程序获取网络设备的信息并设置为环境变量，用于后续步骤。</p>
+<p>文件内容如下，当添加网络设备时，调用<code>path_id</code>内置程序获取设备信息，随后调用<code>net_setup_link</code>内置程序，如果先前没有重命名设备，且内置程序输出的<code>ID_NET_NAME</code>环境变量不为空，那么将该环境变量的值设置为新设备名称。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">do</span> not edit this file, it will be overwritten on update</span></span><br><span class="line"></span><br><span class="line">SUBSYSTEM!=&quot;net&quot;, GOTO=&quot;net_setup_link_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;path_id&quot;</span><br><span class="line"></span><br><span class="line">ACTION!=&quot;add&quot;, GOTO=&quot;net_setup_link_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;net_setup_link&quot;</span><br><span class="line"></span><br><span class="line">NAME==&quot;&quot;, ENV&#123;ID_NET_NAME&#125;!=&quot;&quot;, NAME=&quot;$env&#123;ID_NET_NAME&#125;&quot;</span><br><span class="line"></span><br><span class="line">LABEL=&quot;net_setup_link_end&quot;</span><br></pre></td></tr></table></figure>
+
+<p><code>net_setup_link</code>内置程序会读取<code>/usr/lib/systemd/network/99-default.link</code>配置文件，从而决定最后网络设备应该使用的名称：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[Link]</span><br><span class="line">NamePolicy=kernel database onboard slot path</span><br><span class="line">AlternativeNamesPolicy=database onboard slot path</span><br><span class="line">MACAddressPolicy=persistent</span><br></pre></td></tr></table></figure>
+
+<p>该文件的<code>NamePolicy</code>参数标记了网络设备命名的优先级顺序：内核名称 &gt; udev硬件数据库中记录名称 &gt; onboard名称(<code>ID_NET_NAME_ONBOARD, eno</code>) &gt; slot名称(<code>ID_NET_NAME_SLOT, ens</code>) &gt; path名称(<code>ID_NET_NAME_PATH, enp</code>)。</p>
+<p>另外，<code>AlternativeNamesPolicy</code>则记录了网络设备的别名，如果有该配置项，那么应用程序也可以通过别名来访问网络设备。</p>
+<h1 id="修改网卡命名的场景"><a href="#修改网卡命名的场景" class="headerlink" title="修改网卡命名的场景"></a>修改网卡命名的场景</h1><p><strong>取消一致网络设备命名</strong></p>
+<ol>
+<li><p>修改grub2启动参数，在GRUB_CMDLINE_LINUX的中加上”net.ifnames&#x3D;0 biosdevname&#x3D;0”的参数</p>
+<p><code>vi /etc/default/grub</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">GRUB_CMDLINE_LINUX=&quot;find_preseed=/preseed.cfg auto noprompt priority=critical locale=en_US&quot; net.ifnames=0 biosdevname=0”</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新加载到启动中</p>
+<p>对于 Debian 的 Ubuntu&#x2F;Mint：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo update-grub</span><br></pre></td></tr></table></figure>
+
+<p>Centos&#x2F;RHEL</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">sudo grub2-mkconfig -o /boot/grub2/grub.cfg</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重新对网卡配置文件进行命名（网卡文件全部重命名，顺便修改配置文件NAME、DEVICE的名称）<br><code>mv /etc/sysconfig/network-scripts/ifcfg-enp0s3 /etc/sysconfig/network-scripts/ifcfg-eth0</code></p>
+</li>
+<li><p>reboot重启生效</p>
+</li>
+</ol>
+<p><strong>基于MAC地址固定网络设备名称</strong></p>
+<p>通过udev设备管理器，我们可以很方便的更改以及定制网络设备命名规则，比如如果想要基于MAC地址固定某个网络设备的名称，那么可以创建&#96;&#x2F;etc&#x2F;udev&#x2F;rules.d&#x2F;70-persistent-net.rules文件，内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">SUBSYSTEM==&quot;net&quot;,ACTION==&quot;add&quot;,ATTR&#123;address&#125;==&quot;ac:1f:6b:84:85:03&quot;,ATTR&#123;type&#125;==&quot;1&quot;,NAME=&quot;eth0&quot;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>ATTR&#123;address&#125;</code>表示MAC地址，<code>ATTR&#123;type&#125;==&quot;1&quot;</code>表示是<code>Ethernet</code>类型。修改后重启生效</p>
+<p><strong>ubuntu18修改网卡名称</strong></p>
+<p>ubuntu18默认根据 &#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;目录下的80-net-setup-link.rules文件定义的规则。如果要更改规则，需要先将文件80-net-setup-link.rules从&#x2F;lib&#x2F;udev&#x2F;rules.d目录复制到&#x2F;etc&#x2F;udev&#x2F;rules.d目录。因为&#x2F;etc&#x2F;udev&#x2F;rules.d目录下规则的优先级高于&#x2F;lib&#x2F;udev&#x2F;rules.d目录，识别网卡并命名时，会优先从&#x2F;etc&#x2F;udev&#x2F;rules.d目录下寻找规则文件。将ID_NET_NAME改成ID_NET_SLOT即可</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">do</span> not edit this file, it will be overwritten on update</span></span><br><span class="line"></span><br><span class="line">SUBSYSTEM!=&quot;net&quot;, GOTO=&quot;net_setup_link_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;path_id&quot;</span><br><span class="line"></span><br><span class="line">ACTION==&quot;remove&quot;, GOTO=&quot;net_setup_link_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;net_setup_link&quot;</span><br><span class="line"></span><br><span class="line">NAME==&quot;&quot;, ENV&#123;ID_NET_NAME&#125;!=&quot;&quot;, NAME=&quot;$env&#123;ID_NET_NAME&#125;&quot;</span><br><span class="line"></span><br><span class="line">LABEL=&quot;net_setup_link_end&quot;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="虚拟机网卡元数据"><a href="#虚拟机网卡元数据" class="headerlink" title="虚拟机网卡元数据"></a>虚拟机网卡元数据</h1><h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a href="https://www.cnblogs.com/zyd112/p/8143464.html">centos7中的网卡一致性命名规则、网卡重命名方法 - Noway11 - 博客园 (cnblogs.com)</a></p>
+<p><a href="https://www.cnblogs.com/frankming/p/17535560.html">Linux网络设备命名规则简介 - frankming - 博客园 (cnblogs.com)</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/671719163">linux网卡命名规则与修改方法 - 知乎 (zhihu.com)</a></p>
+]]></content>
+      <categories>
+        <category>linux</category>
+      </categories>
+      <tags>
+        <tag>网卡</tag>
+      </tags>
+  </entry>
+</search>
