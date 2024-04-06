@@ -17,27 +17,27 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null,"activeClass":"changyan"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="Linux 中网络接口的命名规则通常由 udev（内核设备管理器）管理，过去网卡的命名可能是 eth0、eth1 等，但现在 Linux 采用了一种更加可预测和稳定的命名方案，称为一致网络设备命名规范。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="linux网卡命名规则及问题解决">
-<meta property="og:url" content="http://example.com/2024/04/03/linux-network-setting/index.html">
+<meta property="og:url" content="http://example.com/posts/b9380a97f110/index.html">
 <meta property="og:site_name" content="Zauhoo&#39;s Blog">
 <meta property="og:description" content="Linux 中网络接口的命名规则通常由 udev（内核设备管理器）管理，过去网卡的命名可能是 eth0、eth1 等，但现在 Linux 采用了一种更加可预测和稳定的命名方案，称为一致网络设备命名规范。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-04-02T19:15:58.000Z">
-<meta property="article:modified_time" content="2024-04-05T08:37:56.650Z">
+<meta property="article:modified_time" content="2024-04-05T11:09:03.047Z">
 <meta property="article:author" content="zauhoo">
 <meta property="article:tag" content="网卡">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2024/04/03/linux-network-setting/">
+<link rel="canonical" href="http://example.com/posts/b9380a97f110/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2024/04/03/linux-network-setting/","path":"2024/04/03/linux-network-setting/","title":"linux网卡命名规则及问题解决"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/posts/b9380a97f110/","path":"/posts/b9380a97f110/","title":"linux网卡命名规则及问题解决"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>linux网卡命名规则及问题解决 | Zauhoo's Blog</title>
@@ -88,7 +88,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -139,7 +139,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linix%E7%BD%91%E5%8D%A1%E5%91%BD%E5%90%8D"><span class="nav-number">1.</span> <span class="nav-text">linix网卡命名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#net-ifnames%E5%92%8Cbiosdevname"><span class="nav-number">1.1.</span> <span class="nav-text">net.ifnames和biosdevname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#biosdevname"><span class="nav-number">1.2.</span> <span class="nav-text">biosdevname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd-udev"><span class="nav-number">1.3.</span> <span class="nav-text">systemd-udev</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%91%BD%E5%90%8D%E7%AD%96%E7%95%A5"><span class="nav-number">1.3.1.</span> <span class="nav-text">默认命名策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rename%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">rename流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%BD%91%E5%8D%A1%E5%91%BD%E5%90%8D%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">修改网卡命名的场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BD%91%E5%8D%A1%E5%85%83%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">虚拟机网卡元数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#linix%E7%BD%91%E5%8D%A1%E5%91%BD%E5%90%8D"><span class="nav-number">1.</span> <span class="nav-text">linix网卡命名</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#net-ifnames%E5%92%8Cbiosdevname"><span class="nav-number">1.1.</span> <span class="nav-text">net.ifnames和biosdevname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#biosdevname"><span class="nav-number">1.2.</span> <span class="nav-text">biosdevname</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#systemd-udev"><span class="nav-number">1.3.</span> <span class="nav-text">systemd-udev</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E5%91%BD%E5%90%8D%E7%AD%96%E7%95%A5"><span class="nav-number">1.3.1.</span> <span class="nav-text">默认命名策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rename%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">rename流程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%BD%91%E5%8D%A1%E5%91%BD%E5%90%8D%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">修改网卡命名的场景</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E4%B8%80%E8%87%B4%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%91%BD%E5%90%8D"><span class="nav-number">2.1.</span> <span class="nav-text">取消一致网络设备命名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8EMAC%E5%9C%B0%E5%9D%80%E5%9B%BA%E5%AE%9A%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0"><span class="nav-number">2.2.</span> <span class="nav-text">基于MAC地址固定网络设备名称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ubuntu18%E4%BF%AE%E6%94%B9%E7%BD%91%E5%8D%A1%E5%90%8D%E7%A7%B0"><span class="nav-number">2.3.</span> <span class="nav-text">ubuntu18修改网卡名称</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BD%91%E5%8D%A1%E5%85%83%E6%95%B0%E6%8D%AE"><span class="nav-number">3.</span> <span class="nav-text">虚拟机网卡元数据</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E6%A1%A3"><span class="nav-number">4.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -154,18 +154,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">4</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -174,6 +174,9 @@
       <span class="links-of-author-item">
         <a href="mailto:zhangxuhao_od@qq.com" title="E-Mail → mailto:zhangxuhao_od@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
       </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
   </div>
 
         </div>
@@ -197,7 +200,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/03/linux-network-setting/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/posts/b9380a97f110/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -233,7 +236,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2024-04-05 16:37:56" itemprop="dateModified" datetime="2024-04-05T16:37:56+08:00">2024-04-05</time>
+      <time title="修改时间：2024-04-05 19:09:03" itemprop="dateModified" datetime="2024-04-05T19:09:03+08:00">2024-04-05</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -253,20 +256,6 @@
       <span class="post-meta-item-text">阅读次数：</span>
       <span id="busuanzi_value_page_pv"></span>
     </span>
-  
-  <span class="post-meta-item">
-    
-      <span class="post-meta-item-icon">
-        <i class="far fa-comment"></i>
-      </span>
-      <span class="post-meta-item-text">Changyan：</span>
-    
-    <a title="linux网卡命名规则及问题解决" href="/2024/04/03/linux-network-setting/#SOHUCS" itemprop="discussionUrl">
-      <span id="sourceId::bb4ef772f0a08723469c6dc235a65fd0" class="cy_cmt_count" itemprop="commentCount"></span>
-    </a>
-  </span>
-  
-  
 </div>
 
         </div>
@@ -413,7 +402,6 @@
 <p><code>75-net-description.rules</code> 中的规则让 udev 通过检查网络接口设备，根据device属性填写网卡的属性命名，有些设备属性可能处于未定义状态，一个网卡通常同时具有多个维度的名称，systemd在选取的时候，按照有先后次序，使用先命中的，顺序可以简单理解为（eno1-ens1-enp1）</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# udevadm info /sys/class/net/ens160 | grep NAME</span><br><span class="line">E: ID_NET_NAME=ens160</span><br><span class="line">E: ID_NET_NAME_MAC=enx000c290e5d36</span><br><span class="line">E: ID_NET_NAME_PATH=enp3s0</span><br><span class="line">E: ID_NET_NAME_SLOT=ens160</span><br></pre></td></tr></table></figure>
 
-
 <p>当添加网络设备时，调用<code>net_id</code>内置程序获取设备信息并设置内部环境变量，对于usb类型的网络设备，调用<code>usb_id</code>以及<code>hwdb</code>内置程序获取设备信息并设置内部环境变量，对于pci类型的网络设备，根据一些内核中的设备属性以及<code>hwdb</code>内置程序设置内部环境变量，文件内容如下</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">do</span> not edit this file, it will be overwritten on update</span></span><br><span class="line"></span><br><span class="line">ACTION==&quot;remove&quot;, GOTO=&quot;net_end&quot;</span><br><span class="line">SUBSYSTEM!=&quot;net&quot;, GOTO=&quot;net_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;net_id&quot;</span><br><span class="line"></span><br><span class="line">SUBSYSTEMS==&quot;usb&quot;, IMPORT&#123;builtin&#125;=&quot;usb_id&quot;, IMPORT&#123;builtin&#125;=&quot;hwdb --subsystem=usb&quot;</span><br><span class="line">SUBSYSTEMS==&quot;usb&quot;, GOTO=&quot;net_end&quot;</span><br><span class="line"></span><br><span class="line">SUBSYSTEMS==&quot;pci&quot;, ENV&#123;ID_BUS&#125;=&quot;pci&quot;, ENV&#123;ID_VENDOR_ID&#125;=&quot;$attr&#123;vendor&#125;&quot;, ENV&#123;ID_MODEL_ID&#125;=&quot;$attr&#123;device&#125;&quot;</span><br><span class="line">SUBSYSTEMS==&quot;pci&quot;, IMPORT&#123;builtin&#125;=&quot;hwdb --subsystem=pci&quot;</span><br><span class="line"></span><br><span class="line">LABEL=&quot;net_end&quot;</span><br></pre></td></tr></table></figure>
 
@@ -436,8 +424,7 @@
 
 <p>该文件的<code>NamePolicy</code>参数标记了网络设备命名的优先级顺序：内核名称 &gt; udev硬件数据库中记录名称 &gt; onboard名称(<code>ID_NET_NAME_ONBOARD, eno</code>) &gt; slot名称(<code>ID_NET_NAME_SLOT, ens</code>) &gt; path名称(<code>ID_NET_NAME_PATH, enp</code>)。</p>
 <p>另外，<code>AlternativeNamesPolicy</code>则记录了网络设备的别名，如果有该配置项，那么应用程序也可以通过别名来访问网络设备。</p>
-<h1 id="修改网卡命名的场景"><a href="#修改网卡命名的场景" class="headerlink" title="修改网卡命名的场景"></a>修改网卡命名的场景</h1><p><strong>取消一致网络设备命名</strong></p>
-<ol>
+<h1 id="修改网卡命名的场景"><a href="#修改网卡命名的场景" class="headerlink" title="修改网卡命名的场景"></a>修改网卡命名的场景</h1><h2 id="取消一致网络设备命名"><a href="#取消一致网络设备命名" class="headerlink" title="取消一致网络设备命名"></a>取消一致网络设备命名</h2><ol>
 <li><p>修改grub2启动参数，在GRUB_CMDLINE_LINUX的中加上”net.ifnames&#x3D;0 biosdevname&#x3D;0”的参数</p>
 <p><code>vi /etc/default/grub</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRUB_CMDLINE_LINUX=&quot;find_preseed=/preseed.cfg auto noprompt priority=critical locale=en_US&quot; net.ifnames=0 biosdevname=0”</span><br></pre></td></tr></table></figure>
@@ -454,16 +441,12 @@
 <li><p>reboot重启生效</p>
 </li>
 </ol>
-<p><strong>基于MAC地址固定网络设备名称</strong></p>
-<p>通过udev设备管理器，我们可以很方便的更改以及定制网络设备命名规则，比如如果想要基于MAC地址固定某个网络设备的名称，那么可以创建&#96;&#x2F;etc&#x2F;udev&#x2F;rules.d&#x2F;70-persistent-net.rules文件，内容如下：</p>
+<h2 id="基于MAC地址固定网络设备名称"><a href="#基于MAC地址固定网络设备名称" class="headerlink" title="基于MAC地址固定网络设备名称"></a>基于MAC地址固定网络设备名称</h2><p>通过udev设备管理器，我们可以很方便的更改以及定制网络设备命名规则，比如如果想要基于MAC地址固定某个网络设备的名称，那么可以创建&#96;&#x2F;etc&#x2F;udev&#x2F;rules.d&#x2F;70-persistent-net.rules文件，内容如下：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SUBSYSTEM==&quot;net&quot;,ACTION==&quot;add&quot;,ATTR&#123;address&#125;==&quot;ac:1f:6b:84:85:03&quot;,ATTR&#123;type&#125;==&quot;1&quot;,NAME=&quot;eth0&quot;</span><br></pre></td></tr></table></figure>
 
 <p>其中<code>ATTR&#123;address&#125;</code>表示MAC地址，<code>ATTR&#123;type&#125;==&quot;1&quot;</code>表示是<code>Ethernet</code>类型。修改后重启生效</p>
-<p><strong>ubuntu18修改网卡名称</strong></p>
-<p>ubuntu18默认根据 &#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;目录下的80-net-setup-link.rules文件定义的规则。如果要更改规则，需要先将文件80-net-setup-link.rules从&#x2F;lib&#x2F;udev&#x2F;rules.d目录复制到&#x2F;etc&#x2F;udev&#x2F;rules.d目录。因为&#x2F;etc&#x2F;udev&#x2F;rules.d目录下规则的优先级高于&#x2F;lib&#x2F;udev&#x2F;rules.d目录，识别网卡并命名时，会优先从&#x2F;etc&#x2F;udev&#x2F;rules.d目录下寻找规则文件。将ID_NET_NAME改成ID_NET_SLOT即可</p>
+<h2 id="ubuntu18修改网卡名称"><a href="#ubuntu18修改网卡名称" class="headerlink" title="ubuntu18修改网卡名称"></a>ubuntu18修改网卡名称</h2><p>ubuntu18默认根据 &#x2F;lib&#x2F;udev&#x2F;rules.d&#x2F;目录下的80-net-setup-link.rules文件定义的规则。如果要更改规则，需要先将文件80-net-setup-link.rules从&#x2F;lib&#x2F;udev&#x2F;rules.d目录复制到&#x2F;etc&#x2F;udev&#x2F;rules.d目录。因为&#x2F;etc&#x2F;udev&#x2F;rules.d目录下规则的优先级高于&#x2F;lib&#x2F;udev&#x2F;rules.d目录，识别网卡并命名时，会优先从&#x2F;etc&#x2F;udev&#x2F;rules.d目录下寻找规则文件。将ID_NET_NAME改成ID_NET_SLOT即可</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash"><span class="keyword">do</span> not edit this file, it will be overwritten on update</span></span><br><span class="line"></span><br><span class="line">SUBSYSTEM!=&quot;net&quot;, GOTO=&quot;net_setup_link_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;path_id&quot;</span><br><span class="line"></span><br><span class="line">ACTION==&quot;remove&quot;, GOTO=&quot;net_setup_link_end&quot;</span><br><span class="line"></span><br><span class="line">IMPORT&#123;builtin&#125;=&quot;net_setup_link&quot;</span><br><span class="line"></span><br><span class="line">NAME==&quot;&quot;, ENV&#123;ID_NET_NAME&#125;!=&quot;&quot;, NAME=&quot;$env&#123;ID_NET_NAME&#125;&quot;</span><br><span class="line"></span><br><span class="line">LABEL=&quot;net_setup_link_end&quot;</span><br></pre></td></tr></table></figure>
-
-
 
 <h1 id="虚拟机网卡元数据"><a href="#虚拟机网卡元数据" class="headerlink" title="虚拟机网卡元数据"></a>虚拟机网卡元数据</h1><h1 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h1><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zyd112/p/8143464.html">centos7中的网卡一致性命名规则、网卡重命名方法 - Noway11 - 博客园 (cnblogs.com)</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/frankming/p/17535560.html">Linux网络设备命名规则简介 - frankming - 博客园 (cnblogs.com)</a></p>
@@ -490,6 +473,23 @@
   </div>
 </div>
 
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>zauhoo
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/posts/b9380a97f110/" title="linux网卡命名规则及问题解决">http://example.com/posts/b9380a97f110/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
           <div class="post-tags">
               <a href="/tags/%E7%BD%91%E5%8D%A1/" rel="tag"># 网卡</a>
           </div>
@@ -498,8 +498,8 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/04/05/hexo-blog/" rel="prev" title="使用Github + Hexo搭建博客">
-                  <i class="fa fa-angle-left"></i> 使用Github + Hexo搭建博客
+                <a href="/posts/95d8dac334f3/" rel="prev" title="关于ironic的一些源码理解">
+                  <i class="fa fa-angle-left"></i> 关于ironic的一些源码理解
                 </a>
             </div>
             <div class="post-nav-item">
@@ -514,7 +514,6 @@
 
 
 
-    <div class="comments" id="SOHUCS" sid="bb4ef772f0a08723469c6dc235a65fd0"></div>
 </div>
   </main>
 
@@ -583,8 +582,6 @@
 
 
 
-<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cyxec1Cjd","appkey":"30f177a10c80b00eee76410cd0513299","count":true}</script>
-<script src="/js/third-party/comments/changyan.js"></script>
 
 </body>
 </html>

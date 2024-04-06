@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.19.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Ironic是一个OpenStack项目，它提供裸机（而不是虚拟机）。它可以独立使用，也可以作为OpenStack云的一部分使用，并与OpenStack keystone、nova、neutron、glance和swift服务集成。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于ironic的一些源码理解">
+<meta property="og:url" content="http://example.com/posts/95d8dac334f3/index.html">
+<meta property="og:site_name" content="Zauhoo&#39;s Blog">
+<meta property="og:description" content="Ironic是一个OpenStack项目，它提供裸机（而不是虚拟机）。它可以独立使用，也可以作为OpenStack云的一部分使用，并与OpenStack keystone、nova、neutron、glance和swift服务集成。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-10-06T14:35:10.000Z">
+<meta property="article:modified_time" content="2024-04-06T14:45:32.347Z">
+<meta property="article:author" content="zauhoo">
+<meta property="article:tag" content="ironic">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/posts/95d8dac334f3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/posts/95d8dac334f3/","path":"/posts/95d8dac334f3/","title":"关于ironic的一些源码理解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于ironic的一些源码理解 | Zauhoo's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Zauhoo's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF"><span class="nav-number">1.</span> <span class="nav-text">关键技术</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ironic-%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">ironic 介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A3%B8%E9%87%91%E5%B1%9E%E8%8A%82%E7%82%B9"><span class="nav-number">3.</span> <span class="nav-text">裸金属节点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A3%B8%E9%87%91%E5%B1%9E%E5%AE%9E%E4%BE%8B"><span class="nav-number">4.</span> <span class="nav-text">裸金属实例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E8%B5%B7%E5%88%9B%E5%BB%BA"><span class="nav-number">4.1.</span> <span class="nav-text">发起创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E7%94%B3%E6%98%8E"><span class="nav-number">4.2.</span> <span class="nav-text">资源申明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%87%86%E5%A4%87"><span class="nav-number">4.3.</span> <span class="nav-text">部署准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#start-deploy"><span class="nav-number">4.3.1.</span> <span class="nav-text">start_deploy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#do-node-deploy"><span class="nav-number">4.3.2.</span> <span class="nav-text">do_node_deploy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#do-next-deploy-step"><span class="nav-number">4.3.3.</span> <span class="nav-text">do_next_deploy_step</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">4.4.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#iscsi-deploy"><span class="nav-number">4.4.1.</span> <span class="nav-text">iscsi deploy</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="zauhoo"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">zauhoo</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="mailto:zhangxuhao_od@qq.com" title="E-Mail → mailto:zhangxuhao_od@qq.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/posts/95d8dac334f3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="zauhoo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zauhoo's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于ironic的一些源码理解 | Zauhoo's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于ironic的一些源码理解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-10-06 22:35:10" itemprop="dateCreated datePublished" datetime="2023-10-06T22:35:10+08:00">2023-10-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-04-06 22:45:32" itemprop="dateModified" datetime="2024-04-06T22:45:32+08:00">2024-04-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/openstack/" itemprop="url" rel="index"><span itemprop="name">openstack</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>Ironic是一个OpenStack项目，它提供裸机（而不是虚拟机）。它可以独立使用，也可以作为OpenStack云的一部分使用，并与OpenStack keystone、nova、neutron、glance和swift服务集成。</p>
+<span id="more"></span>
+<h1 id="关键技术"><a href="#关键技术" class="headerlink" title="关键技术"></a>关键技术</h1><p>pxe</p>
+<p>dhcp</p>
+<p>nbp</p>
+<p>tftp</p>
+<p>ipmi</p>
+<h1 id="ironic-介绍"><a href="#ironic-介绍" class="headerlink" title="ironic 介绍"></a>ironic 介绍</h1><p>ironic api</p>
+<p>ironic conductor</p>
+<p>ironic inspect</p>
+<h1 id="裸金属节点"><a href="#裸金属节点" class="headerlink" title="裸金属节点"></a>裸金属节点</h1><p><strong>添加节点</strong></p>
+<p>裸金属为物理服务器，通过资源类属性唯一标识，可在placement库resource_provider表中查看到。添加节点后只会注册资源类信息，没有cpu、内存信息，资源类格式为CUSTOME_XXX</p>
+<p><strong>设置节点状态</strong></p>
+<p>裸金属节点分别有enroll，manageable，available等，<a target="_blank" rel="noopener" href="https://docs.openstack.org/ironic/latest/_images/states.png">官网的状态机设计</a>，可通过ironic manage&#x2F;inspector&#x2F;provide更改状态，裸机自检前需要将节点置为manageable状态，创建实例前需要将节点置为available状态</p>
+<p><strong>节点inspect</strong></p>
+<p>ironic inspect通过ironic-python-agent搜集节点信息，包括cpu、内存、架构等。在飞腾环境下，无法执行inspect相关操作、需要手动添加节点的上述信息。</p>
+<p>注：手动根据节点网卡的mac地址创建port，若步骤3已完成ironic inspect则无需执行此步骤</p>
+<p><em>TODO</em>：通过创建虚拟机的流程创建裸金属实例时，节点缺少cpu等信息会报错，错误原因需要补充</p>
+<h1 id="裸金属实例"><a href="#裸金属实例" class="headerlink" title="裸金属实例"></a>裸金属实例</h1><h2 id="发起创建"><a href="#发起创建" class="headerlink" title="发起创建"></a>发起创建</h2><p><strong>创建flavor</strong></p>
+<p>在创建裸金属实例前，需要调整用户所属项目的配额，因为物理服务器cpu、内存配置较高，默认配额资源可能不够，从而导致报错<br>创建模板、设置模板的cpu、内存值为0，同时设置资源类，否则节点调度会失败，原因见添加节点</p>
+<p><strong>nova api</strong></p>
+<p>通过horizon或其他定制的web可视化页面，向nova api发起创建裸金属实例的请求</p>
+<h2 id="资源申明"><a href="#资源申明" class="headerlink" title="资源申明"></a>资源申明</h2><p>nova api通过rabbitmq远程调用nova conductor，nova condutor创建实例对象同时调用nova schduler筛选可用的compute node，主要通过资源类确定可用的计算节点，然后RPC调用nova compute的<code>build_and_run_instance()</code></p>
+<p>注：nova-comute和nova-compute-ironic的区别在于，非容器化部署时只有nova-comute且需用户在conf修改driver为ironic，容器化部署提供了名为nova-compute-ironic的容器镜像，无需修改conf</p>
+<p><strong>nova compute</strong></p>
+<p>nova-compute-ironic服务首先声明资源占用，修改resource tracker的缓存，使用build生成实例所需的资源</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建vif并挂载至node对应port</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            LOG.debug(<span class="string">&#x27;Start building networks asynchronously for instance.&#x27;</span>,</span><br><span class="line">                      instance=instance)</span><br><span class="line">            network_info = self._build_networks_for_instance(context, instance,</span><br><span class="line">                    requested_networks, security_groups)</span><br><span class="line">            resources[<span class="string">&#x27;network_info&#x27;</span>] = network_info</span><br><span class="line"><span class="comment"># 根据bdm创建volume并挂载</span></span><br><span class="line">            block_device_info = self._prep_block_device(context, instance,</span><br><span class="line">                    block_device_mapping)</span><br><span class="line">            resources[<span class="string">&#x27;block_device_info&#x27;</span>] = block_device_info</span><br></pre></td></tr></table></figure>
+<p>ironic driver阶段执行以下步骤</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新裸金属节点的信息</span></span><br><span class="line">        node = self._get_node(node_uuid)</span><br><span class="line">        flavor = instance.flavor</span><br><span class="line"></span><br><span class="line">        self._add_instance_info_to_node(node, instance, image_meta, flavor,</span><br><span class="line">                                        block_device_info=block_device_info)</span><br><span class="line"><span class="comment"># 创建裸金属所需的逻辑卷，如deploy image和instance image（需要打印日志，此处为猜测）</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self._add_volume_target_info(context, instance, block_device_info)</span><br><span class="line">        <span class="keyword">except</span> Exception:</span><br><span class="line">            <span class="keyword">with</span> excutils.save_and_reraise_exception():</span><br><span class="line">                LOG.error(<span class="string">&quot;Error preparing deploy for instance &quot;</span></span><br><span class="line">                          <span class="string">&quot;on baremetal node %(node)s.&quot;</span>,</span><br><span class="line">                          &#123;<span class="string">&#x27;node&#x27;</span>: node_uuid&#125;,</span><br><span class="line">                          instance=instance)</span><br><span class="line">                self._cleanup_deploy(node, instance, network_info)</span><br><span class="line"><span class="comment"># 校验裸金属节点的deploy、storage、power接口，</span></span><br><span class="line">        validate_chk = self.ironicclient.call(<span class="string">&quot;node.validate&quot;</span>, node_uuid)</span><br><span class="line"><span class="comment"># 生成configdrive</span></span><br><span class="line">        configdrive_value = <span class="literal">None</span></span><br><span class="line">        <span class="keyword">if</span> configdrive.required_by(instance):</span><br><span class="line">            extra_md = &#123;&#125;</span><br><span class="line">            <span class="keyword">if</span> admin_password:</span><br><span class="line">                extra_md[<span class="string">&#x27;admin_pass&#x27;</span>] = admin_password</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                configdrive_value = self._generate_configdrive(</span><br><span class="line">                    context, instance, node, network_info, extra_md=extra_md,</span><br><span class="line">                    files=injected_files)</span><br><span class="line"><span class="comment"># 请求ironic api 接口set_provision_state为active</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            self.ironicclient.call(<span class="string">&quot;node.set_provision_state&quot;</span>, node_uuid,</span><br><span class="line">                                   ironic_states.ACTIVE,</span><br><span class="line">                                   configdrive=configdrive_value)</span><br></pre></td></tr></table></figure>
+
+<p><strong>ironic api</strong></p>
+<p>ironic api接收<code>provision_action</code>请求，通过rabbitmq远程调用ironic conductor</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">_do_provision_action</span>(<span class="params">self, rpc_node, target, configdrive=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">                         clean_steps=<span class="literal">None</span>, rescue_password=<span class="literal">None</span></span>):</span><br><span class="line">    topic = api.request.rpcapi.get_topic_for(rpc_node)</span><br><span class="line">    <span class="comment"># Note that there is a race condition. The node state(s) could change</span></span><br><span class="line">    <span class="comment"># by the time the RPC call is made and the TaskManager manager gets a</span></span><br><span class="line">    <span class="comment"># lock.</span></span><br><span class="line">    <span class="keyword">if</span> target <span class="keyword">in</span> (ir_states.ACTIVE, ir_states.REBUILD):</span><br><span class="line">        rebuild = (target == ir_states.REBUILD)</span><br><span class="line">        api.request.rpcapi.do_node_deploy(context=api.request.context,</span><br><span class="line">                                          node_id=rpc_node.uuid,</span><br><span class="line">                                          rebuild=rebuild,</span><br><span class="line">                                          configdrive=configdrive,</span><br><span class="line">                                          topic=topic)</span><br></pre></td></tr></table></figure>
+
+<h2 id="部署准备"><a href="#部署准备" class="headerlink" title="部署准备"></a>部署准备</h2><p>ironic conductor使用task manager管理异步任务，检查节点是否处于维护或rebuild，然后开始部署</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> task_manager.acquire(context, node_id, shared=<span class="literal">False</span>,</span><br><span class="line">                          purpose=<span class="string">&#x27;node deployment&#x27;</span>) <span class="keyword">as</span> task:</span><br><span class="line">    deployments.validate_node(task, event=event)</span><br><span class="line">    deployments.start_deploy(task, self, configdrive, event=event)</span><br></pre></td></tr></table></figure>
+
+<h3 id="start-deploy"><a href="#start-deploy" class="headerlink" title="start_deploy"></a>start_deploy</h3><p>ironic&#x2F;conductor&#x2F;deployment.py中会进行以下检查</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确认实例镜像是否为whole_disk_image</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">start_deploy</span>(<span class="params">task, manager, configdrive=<span class="literal">None</span>, event=<span class="string">&#x27;deploy&#x27;</span></span>):</span><br><span class="line"></span><br><span class="line">    node = task.node</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> event == <span class="string">&#x27;rebuild&#x27;</span>:</span><br><span class="line">        ...省略...</span><br><span class="line"></span><br><span class="line">    iwdi = images.is_whole_disk_image(task.context, node.instance_info)</span><br><span class="line">    driver_internal_info = node.driver_internal_info</span><br><span class="line">    driver_internal_info[<span class="string">&#x27;is_whole_disk_image&#x27;</span>] = iwdi</span><br><span class="line">    node.driver_internal_info = driver_internal_info</span><br><span class="line">    node.save()</span><br><span class="line">    </span><br><span class="line"><span class="comment"># Validate driver_info for ipmitool driver和Validate the deployment information for the task&#x27;s node</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        task.driver.power.validate(task)</span><br><span class="line">        task.driver.deploy.validate(task)</span><br><span class="line">        utils.validate_instance_info_traits(task.node)</span><br><span class="line">        conductor_steps.validate_deploy_templates(task, skip_missing=<span class="literal">True</span>)</span><br><span class="line">        </span><br><span class="line"><span class="comment"># 开始进行部署</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        task.process_event(</span><br><span class="line">            event,</span><br><span class="line">            callback=manager._spawn_worker,</span><br><span class="line">            call_args=(do_node_deploy, task,</span><br><span class="line">                       manager.conductor.<span class="built_in">id</span>, configdrive),</span><br><span class="line">            err_handler=utils.provisioning_error_handler)</span><br></pre></td></tr></table></figure>
+
+<h3 id="do-node-deploy"><a href="#do-node-deploy" class="headerlink" title="do_node_deploy"></a>do_node_deploy</h3><p>ironic&#x2F;conductor&#x2F;deployment.py中deploy流程如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">do_node_deploy</span>(<span class="params">task, conductor_id=<span class="literal">None</span>, configdrive=<span class="literal">None</span></span>):</span><br><span class="line">    ...省略...</span><br><span class="line"><span class="comment"># 判断configdrive    </span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> configdrive:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">isinstance</span>(configdrive, <span class="built_in">dict</span>):</span><br><span class="line">                configdrive = utils.build_configdrive(node, configdrive)</span><br><span class="line">            _store_configdrive(node, configdrive)</span><br><span class="line">            </span><br><span class="line"><span class="comment"># deploy前准备</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        task.driver.deploy.prepare(task)</span><br><span class="line">        </span><br><span class="line"><span class="comment"># deploy的步骤更细</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="comment"># This gets the deploy steps (if any) and puts them in the node&#x27;s</span></span><br><span class="line">        <span class="comment"># driver_internal_info[&#x27;deploy_steps&#x27;]. In-band steps are skipped since</span></span><br><span class="line">        <span class="comment"># we know that an agent is not running yet.</span></span><br><span class="line">        conductor_steps.set_node_deployment_steps(task, skip_missing=<span class="literal">True</span>)</span><br><span class="line">       </span><br><span class="line">    ...省略...</span><br><span class="line">    do_next_deploy_step(task, <span class="number">0</span>, conductor_id)</span><br></pre></td></tr></table></figure>
+
+<p>deploy interface配置为iscsi时，在ironic&#x2F;drivers&#x2F;modules&#x2F;iscsi_deploy.py中，</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进行pxe引导的准备工作</span></span><br><span class="line">        deploy_utils.populate_storage_driver_internal_info(task)</span><br><span class="line">        <span class="keyword">if</span> node.provision_state <span class="keyword">in</span> [states.ACTIVE, states.ADOPTING]:</span><br><span class="line">            task.driver.boot.prepare_instance(task)</span><br></pre></td></tr></table></figure>
+
+<p>boot interface配置为pxe，在ironic&#x2F;drivers&#x2F;modules&#x2F;pxe_base.py中</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 缓存kernel和ramdisk镜像</span></span><br><span class="line">            <span class="keyword">if</span> task.driver.storage.should_write_image(task):</span><br><span class="line">                <span class="comment"># Make sure that the instance kernel/ramdisk is cached.</span></span><br><span class="line">                <span class="comment"># This is for the takeover scenario for active nodes.</span></span><br><span class="line">                instance_image_info = pxe_utils.get_instance_image_info(</span><br><span class="line">                    task, ipxe_enabled=self.ipxe_enabled)</span><br><span class="line">                pxe_utils.cache_ramdisk_kernel(task, instance_image_info,</span><br><span class="line">                                               ipxe_enabled=self.ipxe_enabled)</span><br><span class="line">             </span><br><span class="line"><span class="comment"># 生成neutron dhcp中tftp的配置，调用neutron接口更新neutron dhcp port</span></span><br><span class="line">            dhcp_opts = pxe_utils.dhcp_options_for_instance(</span><br><span class="line">                task, ipxe_enabled=self.ipxe_enabled, ip_version=<span class="number">4</span>)</span><br><span class="line">            dhcp_opts += pxe_utils.dhcp_options_for_instance(</span><br><span class="line">                task, ipxe_enabled=self.ipxe_enabled, ip_version=<span class="number">6</span>)</span><br><span class="line">            provider = dhcp_factory.DHCPFactory()</span><br><span class="line">            provider.update_dhcp(task, dhcp_opts)</span><br><span class="line">            </span><br><span class="line"><span class="comment"># 生成pxe流程中bootfile的cfg</span></span><br><span class="line">                pxe_utils.build_service_pxe_config(</span><br><span class="line">                    task, instance_image_info, root_uuid_or_disk_id,</span><br><span class="line">                    ipxe_enabled=self.ipxe_enabled)</span><br><span class="line">                boot_device = boot_devices.PXE</span><br></pre></td></tr></table></figure>
+
+<p>在ironic&#x2F;conductor&#x2F;steps.py中，关于这一步骤没有仔细了解，大概是更新了node的deploy_steps信息等</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">set_node_deployment_steps</span>(<span class="params">task, reset_current=<span class="literal">True</span>, skip_missing=<span class="literal">False</span></span>):</span><br><span class="line">    <span class="string">&quot;&quot;&quot;Set up the node with deployment step information for deploying.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    Get the deploy steps from the driver.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    :param reset_current: Whether to reset the current step to the first one.</span></span><br><span class="line"><span class="string">    :raises: InstanceDeployFailure if there was a problem getting the</span></span><br><span class="line"><span class="string">             deployment steps.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    node = task.node</span><br><span class="line">    driver_internal_info = node.driver_internal_info</span><br><span class="line">    driver_internal_info[<span class="string">&#x27;deploy_steps&#x27;</span>] = _get_all_deployment_steps(</span><br><span class="line">        task, skip_missing=skip_missing)</span><br><span class="line">    <span class="keyword">if</span> reset_current:</span><br><span class="line">        node.deploy_step = &#123;&#125;</span><br><span class="line">        driver_internal_info[<span class="string">&#x27;deploy_step_index&#x27;</span>] = <span class="literal">None</span></span><br><span class="line">    node.driver_internal_info = driver_internal_info</span><br><span class="line">    node.save()</span><br></pre></td></tr></table></figure>
+
+<h3 id="do-next-deploy-step"><a href="#do-next-deploy-step" class="headerlink" title="do_next_deploy_step"></a>do_next_deploy_step</h3><p>在<code>ironic/conductor/deployment.py</code>中，<code>do_next_deploy_step()</code>方法根据上述配置好的deploy step循环执行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">do_next_deploy_step</span>(<span class="params">task, step_index, conductor_id</span>):</span><br><span class="line">    ...省略...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> ind, step <span class="keyword">in</span> <span class="built_in">enumerate</span>(steps):</span><br><span class="line">        <span class="comment"># Save which step we&#x27;re about to start so we can restart</span></span><br><span class="line">        <span class="comment"># if necessary</span></span><br><span class="line">        node.deploy_step = step</span><br><span class="line">        driver_internal_info = node.driver_internal_info</span><br><span class="line">        driver_internal_info[<span class="string">&#x27;deploy_step_index&#x27;</span>] = step_index + ind</span><br><span class="line">        node.driver_internal_info = driver_internal_info</span><br><span class="line">        node.save()</span><br><span class="line">        interface = <span class="built_in">getattr</span>(task.driver, step.get(<span class="string">&#x27;interface&#x27;</span>))</span><br><span class="line">        LOG.info(<span class="string">&#x27;Executing %(step)s on node %(node)s&#x27;</span>,</span><br><span class="line">                 &#123;<span class="string">&#x27;step&#x27;</span>: step, <span class="string">&#x27;node&#x27;</span>: node.uuid&#125;)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            result = interface.execute_deploy_step(task, step)</span><br></pre></td></tr></table></figure>
+
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>源码走到这一步已经完成了创建裸金属实例的所有准备，下面只需要重启节点进入pxe引导完成系统安装</p>
+<h3 id="iscsi-deploy"><a href="#iscsi-deploy" class="headerlink" title="iscsi deploy"></a>iscsi deploy</h3><p>在上述的<code>do_next_deploy_step()</code>中，笔者猜测先执行的step为<code>iscsi_deploy.py</code>中<code>class ISCSIDeploy()</code>类的deploy。在<code>deploy()</code>方法中，if语句的执行猜测为第一个分支<br><code>deploy()</code>实际没有进行有意义的部署，只从glance下载裸金属实例需要用到的系统镜像，然后调用<code>continue_deploy()</code></p>
+<p><em>TODO</em>：上述猜测均需要实际环境中打印日志验证</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">deploy</span>(<span class="params">self, task</span>):</span><br><span class="line">    node = task.node</span><br><span class="line">    <span class="keyword">if</span> manager_utils.is_fast_track(task):</span><br><span class="line">        LOG.debug(<span class="string">&#x27;Performing a fast track deployment for %(node)s.&#x27;</span>,</span><br><span class="line">                  &#123;<span class="string">&#x27;node&#x27;</span>: task.node.uuid&#125;)</span><br><span class="line">        deploy_utils.cache_instance_image(task.context, node)</span><br><span class="line">        check_image_size(task)</span><br><span class="line">        <span class="comment"># Update the database for the API and the task tracking resumes</span></span><br><span class="line">        <span class="comment"># the state machine state going from DEPLOYWAIT -&gt; DEPLOYING</span></span><br><span class="line">        task.process_event(<span class="string">&#x27;wait&#x27;</span>)</span><br><span class="line">        self.continue_deploy(task)</span><br></pre></td></tr></table></figure>
+
+<p><code>continue_deploy()</code>方法调用<code>do_agent_iscsi_deploy()</code>使用iSCSI完成裸金属系统的安装，调用<code>prepare_instance_to_boot()</code>完成</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">continue_deploy</span>(<span class="params">self, task</span>):</span><br><span class="line">    task.process_event(<span class="string">&#x27;resume&#x27;</span>)</span><br><span class="line">    node = task.node</span><br><span class="line">    LOG.debug(<span class="string">&#x27;Continuing the deployment on node %s&#x27;</span>, node.uuid)</span><br><span class="line"></span><br><span class="line">    uuid_dict_returned = do_agent_iscsi_deploy(task, self._client)</span><br><span class="line">    root_uuid = uuid_dict_returned.get(<span class="string">&#x27;root uuid&#x27;</span>)</span><br><span class="line">    efi_sys_uuid = uuid_dict_returned.get(<span class="string">&#x27;efi system partition uuid&#x27;</span>)</span><br><span class="line">    prep_boot_part_uuid = uuid_dict_returned.get(</span><br><span class="line">        <span class="string">&#x27;PrEP Boot partition uuid&#x27;</span>)</span><br><span class="line">    self.prepare_instance_to_boot(task, root_uuid, efi_sys_uuid,</span><br><span class="line">                                  prep_boot_part_uuid=prep_boot_part_uuid)</span><br><span class="line">    self.reboot_and_finish_deploy(task)</span><br></pre></td></tr></table></figure>
+
+<p><strong>do_agent_iscsi_deploy</strong></p>
+<p><code>do_agent_iscsi_deploy()</code>方法首先设置iSCSI存储服务的目标，然后在<code>continue_deploy()</code>函数中进行iscsi连接节点的系统盘</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">do_agent_iscsi_deploy</span>(<span class="params">task, agent_client</span>):</span><br><span class="line">    node = task.node</span><br><span class="line">    i_info = deploy_utils.parse_instance_info(node)</span><br><span class="line">    wipe_disk_metadata = <span class="keyword">not</span> i_info[<span class="string">&#x27;preserve_ephemeral&#x27;</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 设置iSCSI存储服务的目标</span></span><br><span class="line">    iqn = <span class="string">&#x27;iqn.2008-10.org.openstack:%s&#x27;</span> % node.uuid</span><br><span class="line">    portal_port = CONF.iscsi.portal_port</span><br><span class="line">    conv_flags = CONF.iscsi.conv_flags</span><br><span class="line">    result = agent_client.start_iscsi_target(</span><br><span class="line">        node, iqn,</span><br><span class="line">        portal_port,</span><br><span class="line">        wipe_disk_metadata=wipe_disk_metadata)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 在ironic端完成</span></span><br><span class="line">    address = urlparse.urlparse(node.driver_internal_info[<span class="string">&#x27;agent_url&#x27;</span>])</span><br><span class="line">    address = address.hostname</span><br><span class="line"></span><br><span class="line">    uuid_dict_returned = continue_deploy(task, iqn=iqn, address=address,</span><br><span class="line">                                         conv_flags=conv_flags)</span><br></pre></td></tr></table></figure>
+
+<p>在<code>iscsi_deploy.py</code>文件中存在<code>continue_deploy()</code>同名的函数和类方法，不能搞混。<code>continue_deploy()</code>函数先根据用户镜像的类别选择调用<code>deploy_disk_image()</code>和<code>deploy_partition_image()</code>，最后会清理镜像缓存</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">continue_deploy</span>(<span class="params">task, **kwargs</span>):</span><br><span class="line">    </span><br><span class="line">    ...省略...</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> node.driver_internal_info[<span class="string">&#x27;is_whole_disk_image&#x27;</span>]:</span><br><span class="line">            uuid_dict_returned = deploy_disk_image(**params)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            uuid_dict_returned = deploy_partition_image(**params)</span><br><span class="line">    </span><br><span class="line">    ...省略...</span><br><span class="line">    </span><br><span class="line">    deploy_utils.destroy_images(node.uuid)</span><br></pre></td></tr></table></figure>
+
+<p><code>deploy_disk_image()</code>函数会调用<code>populate_image()</code>函数，本质是通过dd命令将缓存的用户镜像拷贝至节点系统盘</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">deploy_disk_image</span>(<span class="params">address, port, iqn, lun,</span></span><br><span class="line"><span class="params">                      image_path, node_uuid, configdrive=<span class="literal">None</span>,</span></span><br><span class="line"><span class="params">                      conv_flags=<span class="literal">None</span></span>):</span><br><span class="line">    <span class="keyword">with</span> _iscsi_setup_and_handle_errors(address, port, iqn,</span><br><span class="line">                                        lun) <span class="keyword">as</span> dev:</span><br><span class="line">        disk_utils.populate_image(image_path, dev, conv_flags=conv_flags)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> configdrive:</span><br><span class="line">            disk_utils.create_config_drive_partition(node_uuid, dev,</span><br><span class="line">                                                     configdrive)</span><br><span class="line"></span><br><span class="line">        disk_identifier = disk_utils.get_disk_identifier(dev)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">&#x27;disk identifier&#x27;</span>: disk_identifier&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>prepare_instance_to_boot</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">prepare_instance_to_boot</span>(<span class="params">self, task, root_uuid, efi_sys_uuid,</span></span><br><span class="line"><span class="params">                             prep_boot_part_uuid=<span class="literal">None</span></span>):</span><br><span class="line">    </span><br><span class="line">    ...省略...</span><br><span class="line">    </span><br><span class="line">    node = task.node</span><br><span class="line">    <span class="keyword">if</span> deploy_utils.get_boot_option(node) == <span class="string">&quot;local&quot;</span>:</span><br><span class="line">        <span class="comment"># Install the boot loader</span></span><br><span class="line">        self.configure_local_boot(</span><br><span class="line">            task, root_uuid=root_uuid,</span><br><span class="line">            efi_system_part_uuid=efi_sys_uuid,</span><br><span class="line">            prep_boot_part_uuid=prep_boot_part_uuid)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        task.driver.boot.prepare_instance(task)</span><br></pre></td></tr></table></figure>
+
+<p>此处的源码与笔者理解的思路有些冲突，待查看实际环境的日志后再做进一步解析</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def prepare_instance(self, task):</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.png" alt="zauhoo 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>zauhoo
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/posts/95d8dac334f3/" title="关于ironic的一些源码理解">http://example.com/posts/95d8dac334f3/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ironic/" rel="tag"># ironic</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/be47d0e3005d/" rel="prev" title="使用Github + Hexo搭建博客">
+                  <i class="fa fa-angle-left"></i> 使用Github + Hexo搭建博客
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/b9380a97f110/" rel="next" title="linux网卡命名规则及问题解决">
+                  linux网卡命名规则及问题解决 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">zauhoo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/zauhoo" class="github-corner" title="在 GitHub 上关注我" aria-label="在 GitHub 上关注我" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
